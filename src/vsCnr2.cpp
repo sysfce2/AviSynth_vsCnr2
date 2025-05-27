@@ -49,7 +49,7 @@ template <typename T>
 void vsCnr2<T>::downSampleLuma(T* __restrict dstp_, PVideoFrame& src) noexcept
 {
     const size_t src_stride{ src->GetPitch() / sizeof(T) };
-    const size_t dst_width{ src->GetRowSize(PLANAR_U) / sizeof(T) };
+    const int dst_width{ static_cast<int>(src->GetRowSize(PLANAR_U) / sizeof(T)) };
     const int dst_height{ src->GetHeight(PLANAR_U) };
 
     auto loop{ [&](int y)
@@ -58,7 +58,7 @@ void vsCnr2<T>::downSampleLuma(T* __restrict dstp_, PVideoFrame& src) noexcept
         const T* srcpn{ srcp + src_stride * subsh };
         T* __restrict dstp{ dstp_ + y * dst_width };
 
-        for (size_t x{ 0 }; x < dst_width; ++x)
+        for (int x{ 0 }; x < dst_width; ++x)
         {
             const int temp{ x << subsw };
             dstp[x] = (srcp[temp] + srcp[temp + 1] + srcpn[temp] + srcpn[temp + 1] + 2) >> 2;
